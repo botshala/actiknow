@@ -130,7 +130,7 @@ def post_facebook_message(fbid, recevied_message):
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
     pprint(status.json())
 
-def render_postback(payload):
+def render_postback(fbid,payload):
   post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
   print '%s\n%s\n%s'%('&'*20,payload,'&'*20)
   
@@ -168,7 +168,7 @@ class MyQuoteBotView(generic.View):
                 # This might be delivery, optin, postback for other events 
                 if 'postback' in message:
                     print '%s\n%s\n%s'%('$'*20,message,'$'*20)
-                    render_postback(message['postback']['payload'])
+                    render_postback(message['sender']['id'],message['postback']['payload'])
 
                 if 'message' in message:
                     # Print the message to the terminal
