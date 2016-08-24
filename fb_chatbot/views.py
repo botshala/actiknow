@@ -117,8 +117,8 @@ def post_facebook_message(fbid, recevied_message):
             }
         )
 
-    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg3)
-    #status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg5)
+    #status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg3)
+    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg5)
     return
 
     response_text = recevied_message + ' :)'
