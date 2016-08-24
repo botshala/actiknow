@@ -139,9 +139,11 @@ def render_postback(payload):
   if payload == 'TICKET_STATUS':
       response_text = 'Your request is being worked on, and someone will reach out to you very shortly.'
 
-  response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
-  status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
-
+  try:
+    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
+    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+  except Exception as e:
+    print 'POSTBACK-ERROR:%s\n%s\n%s'%('%'*20,e,'%'*20)
 
 class MyQuoteBotView(generic.View):
     def get(self, request, *args, **kwargs):
