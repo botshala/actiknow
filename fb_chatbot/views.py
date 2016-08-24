@@ -102,12 +102,12 @@ def post_facebook_message(fbid, recevied_message):
                       "buttons":[
                         {
                           "type":"postback",
-                          "title":"My POS is not accepting cards",
+                          "title":"POS problem",
                           "payload":"NOT_ACCEPTING"
                         },
                         {
                           "type":"postback",
-                          "title":"Check status of my ticket",
+                          "title":"ticket status",
                           "payload":"TICKET_STATUS"
                         }
                       ]
@@ -131,6 +131,7 @@ def post_facebook_message(fbid, recevied_message):
     pprint(status.json())
 
 def render_postback(payload):
+  post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
     print '%s\n%s\n%s'%('&'*20,payload,'&'*20)
     if payload == 'NOT_ACCEPTING':
       response_text = 'I am sorry for that. Can you please share machine ID?'
