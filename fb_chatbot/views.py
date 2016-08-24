@@ -76,11 +76,13 @@ def post_facebook_message(fbid, recevied_message):
                 }
             )
         status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg1)
+        return
 
     if recevied_message.startswith('/address'):
         response_text = 'Thanks, we have updated your address and logged a ticket, someone will be ther shortly.'
         response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
         status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+        return
 
     response_msg5 = json.dumps(
             {
