@@ -98,17 +98,17 @@ def post_facebook_message(fbid, recevied_message):
                     "type":"template",
                     "payload":{
                       "template_type":"button",
-                      "text":"What do you want to do next?",
+                      "text":"Hi user, how may I help you today ?",
                       "buttons":[
                         {
-                          "type":"web_url",
-                          "url":"https://petersapparel.parseapp.com",
-                          "title":"Show Website"
+                          "type":"postback",
+                          "title":"My POS is not accepting cards",
+                          "payload":"NOT_ACCEPTING"
                         },
                         {
                           "type":"postback",
-                          "title":"Start Chatting",
-                          "payload":"USER_DEFINED_PAYLOAD"
+                          "title":"Check status of my ticket",
+                          "payload":"TICKET_STATUS"
                         }
                       ]
                     }
@@ -132,6 +132,13 @@ def post_facebook_message(fbid, recevied_message):
 
 def render_postback(payload):
     print '%s\n%s\n%s'%('&'*20,payload,'&'*20)
+    if payload == 'NOT_ACCEPTING':
+      response_text = 'I am sorry for that. Can you please share machine ID?'
+    if payload == 'TICKET_STATUS':
+      response_text = 'Your request is being worked on, and someone will reach out to you very shortly.'
+
+    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
+    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
 
 
 class MyQuoteBotView(generic.View):
