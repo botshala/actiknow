@@ -46,47 +46,41 @@ def emoji_search(search_string):
 def post_facebook_message(fbid, recevied_message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
 
-    response_msg3 = json.dumps(
-            {"recipient":{"id":fbid}, 
-                "message":{
-                    "attachment":{
-                        "type":"image",
+    if recevied_message.startswith('/machineid'):
+        response_msg1 = json.dumps(
+                {
+                  "recipient":{
+                    "id":fbid
+                  },
+                  "message":{
+                      "attachment":{
+                        "type":"template",
                         "payload":{
-                            "url":'http://thecatapi.com/api/images/get?format=src&type=png'
+                          "template_type":"button",
+                          "text":"Thanks, the current address we have is ... Is this address correct ?",
+                          "buttons":[
+                            {
+                              "type":"postback",
+                              "title":"yes",
+                              "payload":"ADDRESS_YES"
+                            },
+                            {
+                              "type":"postback",
+                              "title":"no",
+                              "payload":"ADDRESS_NO"
+                            }
+                          ]
                         }
+                      }
                     }
                 }
-         })
+            )
+        status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg1)
 
-    response_msg4 = json.dumps(
-            {
-              "recipient":{
-                "id":fbid
-              },
-              "message":{
-                "attachment":{
-                  "type":"template",
-                  "payload":{
-                    "template_type":"generic",
-                    "elements":[
-                      {
-                        "title":"random cat pic #"+str(random.randint(0,10000)),
-                        "image_url":"http://thecatapi.com/api/images/get?format=src&type=png",
-                        "subtitle":" ",
-                        "buttons":[
-                          {
-                            "type":"postback",
-                            "title":"Moar..",
-                            "payload":"USER_DEFINED_PAYLOAD"
-                          }              
-                        ]
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-        )
+    if recevied_message.startswith('/address'):
+        response_text = 'Thanks, we have updated your address and logged a ticket, someone will be ther shortly.'
+        response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
+        status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
 
     response_msg5 = json.dumps(
             {
@@ -121,23 +115,18 @@ def post_facebook_message(fbid, recevied_message):
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg5)
     return
 
-    response_text = recevied_message + ' :)'
-    response_text = emoji_search(recevied_message.lower())
-
-    
-    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
-    
-    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
-    pprint(status.json())
-
 def render_postback(fbid,payload):
   post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
   print '%s\n%s\n%s'%('&'*20,payload,'&'*20)
   
   if payload == 'NOT_ACCEPTING':
-      response_text = 'I am sorry for that. Can you please share machine ID?'
+      response_text = 'I am sorry for that. Please share your maching ID as follows: /machineid 123********'
   if payload == 'TICKET_STATUS':
       response_text = 'Your request is being worked on, and someone will reach out to you very shortly.'
+  if payload == 'ADDRESS_YES':
+      response_text = 'We have logged a ticket, someone will be there soon.'
+  if payload == 'ADDRESS_NO':
+      response_text = 'Please enter new address as follows: /address <your address>'
 
   try:
     response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
