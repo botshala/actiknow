@@ -1,3 +1,30 @@
 from django.db import models
 
 # Create your models here.
+
+class Customer(models.Model):
+    """ Customer model """
+
+    first_name = models.CharField(max_length=200, null=True)
+    last_name = models.CharField(max_length=200, null=True)
+    machine_id = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    created_at = models.DateTimeField(null=True, blank=True, null=True)
+    last_updated = models.DateTimeField(null=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.machine_id
+
+class Ticket(models.Model):
+    """ Ticket model """
+
+    status = models.CharField(max_length=50, null=True, blank=True)
+    machine_id = models.CharField(max_length=200)
+    message_text = models.TextField(null=True, blank=True)
+    message_link = models.CharField(max_length=100, null=True, blank=True)
+    customer_name = models.CharField(max_length=100, null=True, blank=True)
+    created_at = models.DateTimeField(null=True, blank=True)
+    last_updated = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.machine_id
