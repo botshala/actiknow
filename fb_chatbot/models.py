@@ -9,8 +9,8 @@ class Customer(models.Model):
     last_name = models.CharField(max_length=200, null=True)
     machine_id = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
-    created_at = models.DateTimeField(null=True, blank=True, null=True)
-    last_updated = models.DateTimeField(null=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add = True, auto_now = False)
+    last_updated = models.DateTimeField(auto_now_add = False, auto_now = True)
 
     def __str__(self):
         return self.machine_id
@@ -21,10 +21,9 @@ class Ticket(models.Model):
     status = models.CharField(max_length=50, null=True, blank=True)
     machine_id = models.CharField(max_length=200)
     message_text = models.TextField(null=True, blank=True)
-    message_link = models.CharField(max_length=100, null=True, blank=True)
     customer_name = models.CharField(max_length=100, null=True, blank=True)
-    created_at = models.DateTimeField(null=True, blank=True)
-    last_updated = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add = True, auto_now = False)
+    last_updated = models.DateTimeField(auto_now_add = False, auto_now = True)
 
     def __str__(self):
         return self.machine_id
