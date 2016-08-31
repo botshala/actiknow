@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}New Ticket{% endblock %}
+
+{% block content %}
+<style type="text/css">
+    body {
+    background: #ddd;
+}
+#form-container {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+.custom-input {
+    outline: 0;
+    -webkit-tap-highlight-color: rgba(255,255,255,0);
+    text-align: left;
+    font-family: 'Lato',Helvetica,Arial,sans-serif;
+    padding: 7px;
+    background: #FFF;
+    border: 1px solid #ccc;
+    color: #33373D;
+    border-radius: 2px;
+    font-weight: 300;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+}
+.custom-input:focus {
+    border: 1px solid #85B7D9;
+    box-shadow: none;
+}
+.header {
+    color: #555;
+    margin: 25px 0;
+}
+label {
+    color: #777;
+}
+.alert-conatiner {
+    padding: 0;
+}
+</style>
+<h1 class="header text-center">All Ticket</h1>
+
+<div class="row">
+    <div method="POST" action="" class="col-md-8 col-md-offset-2" id="form-container">
+        <div class="row">
+            <ul>
+                {% for ticket in tickets %}
+                    <li>{{ ticket.machine_id }} : {{ ticket.customer_name }}</li>
+                {% endfor %}
+            </ul>
+        </div><!-- /.row -->
+    </div>
+
+</div><!-- /.row -->
+{% endblock %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+    var $formContainer = $("#form-container");
+    var success = {{ success|yesno:"true,false" }};
+    console.log(success);
+
+    if (success === true) {
+        $formContainer.hide();
+    }
+</script>
+{% endblock %}
