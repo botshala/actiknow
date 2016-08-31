@@ -200,13 +200,14 @@ def tickets(request):
 def new_ticket(request):
 
     data = {}
-    html = 'add_ticket.html'
+    html = 'new_ticket.html'
     if request.method == 'POST':
-        machine_id = request.POST.get('machine-id')
-        customer_name = request.POST.get('customer-name')
-        message = request.POST.get('message', '')
+        machine_id = str(request.POST.get('machine-id'))
+        customer_name = str(request.POST.get('customer-name'))
+        message = str(request.POST.get('message', ''))
 
-        if not machine_id or customer_name:
+        print request.POST
+        if not machine_id or not customer_name:
             data['errors'] = []
             data['errors'].append('Please check that machine id or customer name is valid')
             data['success'] = False
