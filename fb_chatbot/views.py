@@ -24,6 +24,9 @@ def log_ticket(machineid,customer_name,message):
                   message_text=message)
   ticket.save()
 
+def logg(mess,meta='log',symbol='#'):
+  print '%s\n%s\n%s'%(symbol*20,mess,symbol*20)
+
 def post_facebook_message(fbid, recevied_message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
     user_details_url = "https://graph.facebook.com/v2.6/%s"%fbid
@@ -35,6 +38,8 @@ def post_facebook_message(fbid, recevied_message):
     #customer_name = user_details['name']
     #customer_name = customer_name.split(" ")[0]
     customer_name = ''
+    
+    logg(recevied_message,'recevied_message','()')
 
     if recevied_message.startswith('/machineid'):
         machineid = recevied_message.replace('/machineid','')
