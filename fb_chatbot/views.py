@@ -159,7 +159,14 @@ class MyQuoteBotView(generic.View):
             for message in entry['messaging']:
                 # Check to make sure the received call is a message call
                 # This might be delivery, optin, postback for other events 
+                try:
+                  if message['is_echo']:
+                    return HttpResponse() 
+                except:
+                  pass
+
                 logg(message,'raw MEssage','xo')
+                
                 if 'postback' in message:
                     print '%s\n%s\n%s'%('$'*20,message,'$'*20)
                     render_postback(message['sender']['id'],message['postback']['payload'])
