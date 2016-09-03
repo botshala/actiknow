@@ -37,7 +37,7 @@ def post_facebook_message(fbid, recevied_message):
     #print user_details
     
     customer_name = user_details['name']
-    customer_name = customer_name.split(" ")[0]]
+    customer_name = customer_name.split(" ")[0]
 
     logg(customer_name,'recevied_message','uu')
     
