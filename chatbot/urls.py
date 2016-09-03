@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from fb_chatbot import views
 
 urlpatterns = patterns('',
     # Examples:
@@ -9,4 +10,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     #url(r'^hello/', include('fb_chatbot.urls')),
     url(r'', include('fb_chatbot.urls')),
+    url(r'^new-ticket/$', views.new_ticket),
+    url(r'^tickets/$', views.tickets),
 )

@@ -11,6 +11,9 @@ from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+from .models import Ticket
+
+
 PAGE_ACCESS_TOKEN = 'EAAP4kUPM8oQBALU0LzGDXu8IETF9ALwohbpKJ5gZAXnnQDq8uV1fsiP1mQ6t8wGv8LAGyk06K2pZCzQfAGSUHiltl6GZBN5hEACFHXCN5yoEIgpf8ybJZCo5cEgKuVcIeZBxTyPMJz07s5zR3LxcT13Uh6gCekl43ezEPcOmtVQZDZD'
 VERIFY_TOKEN = '8447789934m'
 
@@ -141,8 +144,39 @@ class MyQuoteBotView(generic.View):
 
 
 def index(request):
-    search_string = request.GET.get("text")
+    text = request.GET.get("text") or 'Hello World'
     return HttpResponse(text)
 
 
+def tickets(request):
 
+    # Get all the tickets
+    tickets = Ticket.objects.all()
+    data = {}
+    data['tickets'] = tickets
+    html = 'all_tickets.html'
+    return render(request, html, data)
+
+def new_ticket(request):
+
+    data = {}
+    html = 'new_ticket.html'
+    if request.method == 'POST':
+        machine_id = str(request.POST.get('machine-id'))
+        customer_name = str(request.POST.get('customer-name'))
+        message = str(request.POST.get('message', ''))
+
+        print request.POST
+        if not machine_id or not customer_name:
+            data['errors'] = []
+            data['errors'].append('Please check that machine id or customer name is valid')
+            data['success'] = False
+            return render(request, html, data)
+        else:
+            ticket = Ticket(machine_id=machine_id, \
+                            customer_name=customer_name, \
+                            message_text=message)
+            ticket.save()
+            data['success'] = True
+
+    return render(request, html, data)
