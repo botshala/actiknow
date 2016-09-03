@@ -18,6 +18,12 @@ PAGE_ACCESS_TOKEN = 'EAAP4kUPM8oQBALU0LzGDXu8IETF9ALwohbpKJ5gZAXnnQDq8uV1fsiP1mQ
 VERIFY_TOKEN = '8447789934m'
 
 
+def log_ticket(machineid,customer_name,message):
+  ticket = Ticket(machine_id=machine_id, \
+                  customer_name=customer_name, \
+                  message_text=message)
+  ticket.save()
+
 def post_facebook_message(fbid, recevied_message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
     user_details_url = "https://graph.facebook.com/v2.6/%s"%fbid
@@ -32,7 +38,7 @@ def post_facebook_message(fbid, recevied_message):
 
     if recevied_message.startswith('/machineid'):
         machineid = recevied_message.replace('/machineid','')
-        message = "tciket logged on %s"%( datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
+        message = "ticket logged on %s"%( datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
 
         log_ticket(machineid,customer_name,message)
 
@@ -106,11 +112,6 @@ def post_facebook_message(fbid, recevied_message):
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg5)
     return
 
-def log_ticket(machineid,customer_name,message):
-  ticket = Ticket(machine_id=machine_id, \
-                  customer_name=customer_name, \
-                  message_text=message)
-  ticket.save()
 
 def render_postback(fbid,payload):
   post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
