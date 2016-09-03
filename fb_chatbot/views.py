@@ -64,7 +64,7 @@ def post_facebook_message(fbid, recevied_message,error= False):
                         "type":"template",
                         "payload":{
                           "template_type":"button",
-                          "text":"Thanks, the current address we have is: Shop no. 68, M block, Greater Kailash Area, New Delhi. Is this address correct ?",
+                          "text":"Thanks, the current address we have is: Shop no. 68, M block, Greater Kailash Area, New Delhi. Is this address correct %s?"%(customer_name),
                           "buttons":[
                             {
                               "type":"postback",
