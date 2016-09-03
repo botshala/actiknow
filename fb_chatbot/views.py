@@ -14,6 +14,8 @@ from django.utils.decorators import method_decorator
 from .models import Ticket
 import datetime
 
+import pytz
+
 PAGE_ACCESS_TOKEN = 'EAAP4kUPM8oQBALU0LzGDXu8IETF9ALwohbpKJ5gZAXnnQDq8uV1fsiP1mQ6t8wGv8LAGyk06K2pZCzQfAGSUHiltl6GZBN5hEACFHXCN5yoEIgpf8ybJZCo5cEgKuVcIeZBxTyPMJz07s5zR3LxcT13Uh6gCekl43ezEPcOmtVQZDZD'
 VERIFY_TOKEN = '8447789934m'
 
@@ -50,7 +52,7 @@ def post_facebook_message(fbid, recevied_message,error= False):
 
     if recevied_message.startswith('/machineid'):
         machineid = recevied_message.replace('/machineid','')
-        message = "ticket logged on %s"%( datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
+        message = "ticket logged on %s"%( datetime.datetime.now(pytz.timezone('Asia/Kolkata')).strftime("%I:%M%p on %B %d, %Y"))
 
         log_ticket(machineid,customer_name,message)
 
