@@ -5,5 +5,6 @@ from .views import MyQuoteBotView
 
 urlpatterns = patterns('',
 	url(r'^$', views.index,name = 'index'),
+
 	url(r'^facebook_auth/?$', MyQuoteBotView.as_view()),
     )
