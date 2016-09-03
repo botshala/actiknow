@@ -199,7 +199,7 @@ def index(request):
 def tickets(request):
     tickets = Ticket.objects.all()
     data = {}
-    data['tickets'] = tickets
+    data['tickets'] = tickets[::-1]
     html = 'all_tickets.html'
     return render(request, html, data)
 
