@@ -52,7 +52,7 @@ def post_facebook_message(fbid, recevied_message,error= False):
 
     if recevied_message.startswith('/machineid'):
         machineid = recevied_message.replace('/machineid','')
-        message = "ticket logged on %s"%( datetime.datetime.now(pytz.timezone('Asia/Kolkata')).strftime("%I:%M%p on %B %d, %Y"))
+        message = "ticket logged on %s (IST)"%( datetime.datetime.now(pytz.timezone('Asia/Kolkata')).strftime("%I:%M%p on %B %d, %Y"))
 
         log_ticket(machineid,customer_name,message)
 
@@ -85,6 +85,12 @@ def post_facebook_message(fbid, recevied_message,error= False):
                 }
             )
         status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg1)
+        return
+
+    if recevied_message.lower() == 'pos problem' or recevied_message.lower() == 'pos issue' or or recevied_message.lower() == 'pos' :
+        response_text = 'Apologies for the inconvenience. Please share your maching ID as follows: /machineid 123********'
+        response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
+        status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
         return
 
     if recevied_message.startswith('/address'):
