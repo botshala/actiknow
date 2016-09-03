@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 from .models import Ticket
-
+import datetime
 
 PAGE_ACCESS_TOKEN = 'EAAP4kUPM8oQBALU0LzGDXu8IETF9ALwohbpKJ5gZAXnnQDq8uV1fsiP1mQ6t8wGv8LAGyk06K2pZCzQfAGSUHiltl6GZBN5hEACFHXCN5yoEIgpf8ybJZCo5cEgKuVcIeZBxTyPMJz07s5zR3LxcT13Uh6gCekl43ezEPcOmtVQZDZD'
 VERIFY_TOKEN = '8447789934m'
@@ -20,8 +20,17 @@ VERIFY_TOKEN = '8447789934m'
 
 def post_facebook_message(fbid, recevied_message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
+    user_details_url = "https://graph.facebook.com/v2.6/%s"%fbid
+    user_details_params = {'fields':'first_name,last_name,profile_pic', 'access_token':PAGE_ACCESS_TOKEN}
+    user_details = requests.get(user_details_url, user_details_params).json()
+    customer_name = user_details['first_name']
 
     if recevied_message.startswith('/machineid'):
+        machineid = recevied_message.replace('/machineid','')
+        message = "tciket logged on %s"%( datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
+
+        log_ticket(machineid,customer_name,message)
+
         response_msg1 = json.dumps(
                 {
                   "recipient":{
@@ -32,7 +41,7 @@ def post_facebook_message(fbid, recevied_message):
                         "type":"template",
                         "payload":{
                           "template_type":"button",
-                          "text":"Thanks, the current address we have is ... Is this address correct ?",
+                          "text":"Thanks, the current address we have is: Shop no. 68, M block, Greater Kailash Area, New Delhi. Is this address correct ?",
                           "buttons":[
                             {
                               "type":"postback",
@@ -54,7 +63,7 @@ def post_facebook_message(fbid, recevied_message):
         return
 
     if recevied_message.startswith('/address'):
-        response_text = 'Thanks, we have updated your address and logged a ticket, someone will be ther shortly.'
+        response_text = 'Thanks %s, we have updated your address and logged a ticket, someone will be ther shortly.'%(customer_name)
         response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
         status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
         return
@@ -69,7 +78,7 @@ def post_facebook_message(fbid, recevied_message):
                     "type":"template",
                     "payload":{
                       "template_type":"button",
-                      "text":"Hi user, how may I help you today ?",
+                      "text":"Hi %s, how may I help you today ?"%(customer_name),
                       "buttons":[
                         {
                           "type":"postback",
@@ -92,12 +101,18 @@ def post_facebook_message(fbid, recevied_message):
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg5)
     return
 
+def log_ticket(machineid,customer_name,message):
+  ticket = Ticket(machine_id=machine_id, \
+                  customer_name=customer_name, \
+                  message_text=message)
+  ticket.save()
+
 def render_postback(fbid,payload):
   post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
   print '%s\n%s\n%s'%('&'*20,payload,'&'*20)
   
   if payload == 'NOT_ACCEPTING':
-      response_text = 'I am sorry for that. Please share your maching ID as follows: /machineid 123********'
+      response_text = 'Apologies for the inconvenience. Please share your maching ID as follows: /machineid 123********'
   if payload == 'TICKET_STATUS':
       response_text = 'Your request is being worked on, and someone will reach out to you very shortly.'
   if payload == 'ADDRESS_YES':
@@ -157,8 +172,6 @@ def index(request):
 
 
 def tickets(request):
-
-    # Get all the tickets
     tickets = Ticket.objects.all()
     data = {}
     data['tickets'] = tickets
