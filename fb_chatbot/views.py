@@ -22,13 +22,14 @@ def post_facebook_message(fbid, recevied_message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
     user_details_url = "https://graph.facebook.com/v2.6/%s"%fbid
     user_details_params = {'fields':'first_name,last_name,profile_pic', 'access_token':PAGE_ACCESS_TOKEN}
+    user_details_params = {'access_token':PAGE_ACCESS_TOKEN}
     user_details = requests.get(user_details_url, user_details_params).json()
     print user_details_url
     print user_details
     #customer_name = user_details['name']
     #customer_name = customer_name.split(" ")[0]
     customer_name = ''
-    
+
     if recevied_message.startswith('/machineid'):
         machineid = recevied_message.replace('/machineid','')
         message = "tciket logged on %s"%( datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
