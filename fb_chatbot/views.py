@@ -19,7 +19,7 @@ VERIFY_TOKEN = '8447789934m'
 
 
 def log_ticket(machineid,customer_name,message):
-  ticket = Ticket(machine_id=machine_id, \
+  ticket = Ticket(machine_id=machineid, \
                   customer_name=customer_name, \
                   message_text=message)
   ticket.save()
@@ -27,7 +27,7 @@ def log_ticket(machineid,customer_name,message):
 def logg(mess,meta='log',symbol='#'):
   print '%s\n%s\n%s'%(symbol*20,mess,symbol*20)
 
-def post_facebook_message(fbid, recevied_message):
+def post_facebook_message(fbid, recevied_message,error= False):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
     user_details_url = "https://graph.facebook.com/v2.6/%s"%fbid
     user_details_params = {'fields':'first_name,last_name,profile_pic', 'access_token':PAGE_ACCESS_TOKEN}
@@ -41,6 +41,12 @@ def post_facebook_message(fbid, recevied_message):
     logg(customer_name,'recevied_message','uu')
     
     logg(recevied_message,'recevied_message','()')
+
+    if error:
+      response_text = 'Sorry, some error occurred'
+      response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
+      status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+      return
 
     if recevied_message.startswith('/machineid'):
         machineid = recevied_message.replace('/machineid','')
@@ -178,7 +184,7 @@ class MyQuoteBotView(generic.View):
                         post_facebook_message(message['sender']['id'], message['message']['text'])
                     except Exception as e:
                         print '%s\n%s\n%s'%('%'*20,e,'%'*20)
-                        post_facebook_message(message['sender']['id'], 'Please send a valid text for emoji search.')
+                        post_facebook_message(message['sender']['id'], 'Please send a valid text for emoji search.',error=True)
 
 
         return HttpResponse()    
