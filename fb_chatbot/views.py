@@ -87,7 +87,7 @@ def post_facebook_message(fbid, recevied_message,error= False):
         status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg1)
         return
 
-    if recevied_message.lower() == 'pos problem' or recevied_message.lower() == 'pos issue' or or recevied_message.lower() == 'pos' :
+    if recevied_message.lower() == 'pos problem' or recevied_message.lower() == 'pos issue' or recevied_message.lower() == 'pos' :
         response_text = 'Apologies for the inconvenience. Please share your maching ID as follows: /machineid 123********'
         response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
         status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
