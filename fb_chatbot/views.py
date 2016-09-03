@@ -35,10 +35,11 @@ def post_facebook_message(fbid, recevied_message):
     user_details = requests.get(user_details_url, user_details_params).json()
     #print user_details_url
     #print user_details
-    logg(user_details,'recevied_message','uu')
-    #customer_name = user_details['name']
-    #customer_name = customer_name.split(" ")[0]
-    customer_name = ''
+    
+    customer_name = user_details['name']
+    customer_name = customer_name.split(" ")[0]]
+
+    logg(customer_name,'recevied_message','uu')
     
     logg(recevied_message,'recevied_message','()')
 
