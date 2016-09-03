@@ -35,6 +35,7 @@ def post_facebook_message(fbid, recevied_message):
     user_details = requests.get(user_details_url, user_details_params).json()
     #print user_details_url
     #print user_details
+    logg(user_details,'recevied_message','uu')
     #customer_name = user_details['name']
     #customer_name = customer_name.split(" ")[0]
     customer_name = ''
@@ -160,7 +161,6 @@ class MyQuoteBotView(generic.View):
                 # Check to make sure the received call is a message call
                 # This might be delivery, optin, postback for other events 
                 try:
-                  logg(message['message']['is_echo'],symbol='l')
                   if message['message']['is_echo']:
                     return HttpResponse() 
                 except:
