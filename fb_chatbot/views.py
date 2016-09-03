@@ -160,6 +160,7 @@ class MyQuoteBotView(generic.View):
                 # Check to make sure the received call is a message call
                 # This might be delivery, optin, postback for other events 
                 try:
+                  logg(message['is_echo'],symbol='l')
                   if message['is_echo']:
                     return HttpResponse() 
                 except:
