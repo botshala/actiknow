@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}New Ticket{% endblock %}
+
+{% block content %}
+<style type="text/css">
+    body {
+    background: #ddd;
+}
+.header {
+    color: #555;
+    margin: 25px 0;
+}
+.ticket-title {
+    font-weight: bold;
+}
+.not-found {
+    background: #fff;
+    padding: 10px;
+}
+</style>
+<h1 class="header text-center">Tickets</h1>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3 tickets-container">
+
+        {% if tickets %}
+        <ul class="list-group">
+            {% for ticket in tickets %}
+                <li class="list-group-item">
+                    <span class="ticket-title">Machine Id:</span> {{ ticket.machine_id }} <br>
+                    <span class="ticket-title">Customer Name: </span> {{ ticket.customer_name }} <br>
+                    <span class="ticket-title">Message:</span> {{ ticket.message_text }} 
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="not-found">
+            Sorry, no tickets found for this user.
+        </div>
+        {% endif %}
+    </div><!-- /.row -->
+
+</div><!-- /.row -->
+{% endblock %}
+
+{% block extrascripts %}
+
+{% endblock %}

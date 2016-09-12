@@ -15,5 +15,5 @@ urlpatterns = patterns('',
 
     url(r'^new-ticket/$', views.new_ticket),
     url(r'^tickets/$', views.tickets),
-
+    url(r'^tickets/(?P<fbid>[_.%&+0-9a-zA-Z ]+)/$', views.find_tickets),
 )

@@ -20,10 +20,11 @@ PAGE_ACCESS_TOKEN = 'EAAP4kUPM8oQBALU0LzGDXu8IETF9ALwohbpKJ5gZAXnnQDq8uV1fsiP1mQ
 VERIFY_TOKEN = '8447789934m'
 
 
-def log_ticket(machineid,customer_name,message):
+def log_ticket(machineid,customer_name,message,fbid):
   ticket = Ticket(machine_id=machineid, \
                   customer_name=customer_name, \
-                  message_text=message)
+                  message_text=message,
+                  fbid=fbid)
   ticket.save()
 
 def logg(mess,meta='log',symbol='#'):
@@ -44,6 +45,10 @@ def post_facebook_message(fbid, recevied_message,error= False):
     
     logg(recevied_message,'recevied_message','()')
 
+    # Save user in the database
+    user = Customer(fbid=fbid)
+    user.save()
+
     if error:
       response_text = 'Sorry, some error occurred'
       response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
@@ -54,7 +59,7 @@ def post_facebook_message(fbid, recevied_message,error= False):
         machineid = recevied_message.replace('/machineid','')
         message = "ticket logged on %s (IST)"%( datetime.datetime.now(pytz.timezone('Asia/Kolkata')).strftime("%I:%M%p on %B %d, %Y"))
 
-        log_ticket(machineid,customer_name,message)
+        log_ticket(machineid,customer_name,message,fbid)
 
         response_msg1 = json.dumps(
                 {
@@ -70,13 +75,18 @@ def post_facebook_message(fbid, recevied_message,error= False):
                           "buttons":[
                             {
                               "type":"postback",
-                              "title":"yes",
+                              "title":"Yes",
                               "payload":"ADDRESS_YES"
                             },
                             {
                               "type":"postback",
-                              "title":"no",
+                              "title":"No",
                               "payload":"ADDRESS_NO"
+                            },
+                            {
+                              "type":"postback",
+                              "title":"Go back",
+                              "payload":"GO_BACK"
                             }
                           ]
                         }
@@ -134,23 +144,24 @@ def post_facebook_message(fbid, recevied_message,error= False):
 
 
 def render_postback(fbid,payload):
-  post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
-  print '%s\n%s\n%s'%('&'*20,payload,'&'*20)
-  
-  if payload == 'NOT_ACCEPTING':
-      response_text = 'Apologies for the inconvenience. Please share your maching ID as follows: /machineid 123********'
-  if payload == 'TICKET_STATUS':
-      response_text = 'Your request is being worked on, and someone will reach out to you very shortly.'
-  if payload == 'ADDRESS_YES':
-      response_text = 'We have logged a ticket, someone will be there soon.'
-  if payload == 'ADDRESS_NO':
-      response_text = 'Please enter new address as follows: /address <your address>'
+    post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
+    print '%s\n%s\n%s'%('&'*20,payload,'&'*20)
 
-  try:
-    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
-    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
-  except Exception as e:
-    print 'POSTBACK-ERROR:%s\n%s\n%s'%('%'*20,e,'%'*20)
+    if payload == 'NOT_ACCEPTING':
+        response_text = 'Apologies for the inconvenience. Please share your maching ID as follows: /machineid 123********'
+    if payload == 'TICKET_STATUS':
+        response_text = 'Your request is being worked on, and someone will reach out to you very shortly.'
+    if payload == 'ADDRESS_YES':
+        response_text = 'We have logged a ticket, someone will be there soon.'
+    if payload == 'ADDRESS_NO':
+        response_text = 'Please enter new address as follows: /address <your address>'
+
+
+    try:
+        response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":response_text}})
+        status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+    except Exception as e:
+        print 'POSTBACK-ERROR:%s\n%s\n%s'%('%'*20,e,'%'*20)
 
 class MyQuoteBotView(generic.View):
     def get(self, request, *args, **kwargs):
@@ -202,6 +213,15 @@ class MyQuoteBotView(generic.View):
 def index(request):
     text = request.GET.get("text") or 'Hello World'
     return HttpResponse(text)
+
+
+def find_tickets(request, fbid):
+    data = {}
+    # Get tickets for facebook id 'fbid'
+    tickets = Ticket.objects.filter(fbid=fbid)
+    data['tickets'] = tickets
+    html = 'find_tickets.html'
+    return render(request, html, data)    
 
 
 def tickets(request):
