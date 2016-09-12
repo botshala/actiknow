@@ -77,24 +77,24 @@ label {
         <div class="row">
             <div class="col-md-6 form-group">
                 <label>Machine ID</label>
-                <input type="text" class="form-control custom-input" name="machine-id">
+                <input type="text" class="form-control custom-input" id="machine-id" name="machine-id">
             </div>
             <div class="col-md-6">
                 <label>Customer name</label>
-                <input type="text" class="form-control custom-input" name="customer-name">
+                <input type="text" class="form-control custom-input" id="customer-name" name="customer-name">
             </div>
         </div><!-- /.row -->
 
         <div class="row">
             <div class="col-md-12 form-group">
                 <label>Message</label>
-                <textarea class="form-control custom-input" name="message"></textarea> 
+                <textarea class="form-control custom-input" id="message" name="message"></textarea> 
             </div>
         </div><!-- /.row -->
 
         <div class="row">
             <div class="col-md-12 form-group">
-                <button class="btn btn-success" name="register">Submit</button>
+                <button class="btn btn-success" id="submit-btn" name="register">Submit</button>
             </div>
         </div><!-- /.row -->
 
@@ -105,12 +105,32 @@ label {
 
 {% block extrascripts %}
 <script type="text/javascript">
-    var $formContainer = $("#form-container");
+    var $formContainer = $("#form-container"),
+        $submitBtn = $("#submit-btn"),
+        $customerName = $("#customer-name"),
+        $machineId = $("#machine-id"),
+        $message = $("#message");
+
     var success = {{ success|yesno:"true,false" }};
-    console.log(success);
 
     if (success === true) {
         $formContainer.hide();
     }
+
+    $submitBtn.on("click", function(e) {
+        e.preventDefault();
+        var confirmString = "Your ticket is being logged with the following details:\n";
+        confirmString += "Machine ID: " + $machineId.val() + "\n";
+        confirmString += "Customer Name: " + $customerName.val() + "\n";
+        confirmString += "Message: " + $message.val();
+
+        var choice = confirm(confirmString);
+        if(choice) {
+            // Submit form
+            $formContainer.submit();
+        } else {
+            // Do nothing
+        }
+    });
 </script>
 {% endblock %}
