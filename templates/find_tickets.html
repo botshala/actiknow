@@ -28,8 +28,8 @@
         <ul class="list-group">
             {% for ticket in tickets %}
                 <li class="list-group-item">
-                    <span class="ticket-title">Machine Id:</span> {{ ticket.machine_id }} <br>
                     <span class="ticket-title">Customer Name: </span> {{ ticket.customer_name }} <br>
+                    <span class="ticket-title">Machine Id:</span> {{ ticket.machine_id }} <br>
                     <span class="ticket-title">Message:</span> {{ ticket.message_text }} 
                 </li>
             {% endfor %}
