@@ -11,7 +11,7 @@ from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from .models import Ticket
+from .models import Ticket, Customer
 import datetime
 
 import pytz
