@@ -231,6 +231,13 @@ def tickets(request):
     html = 'all_tickets.html'
     return render(request, html, data)
 
+def all_customers(request):
+    customers = Customer.objects.all()
+    data = {}
+    data['customers'] = customers
+    html = 'all_customers.html'
+    return render(request, html, data)
+
 def new_ticket(request):
 
     data = {}
@@ -251,6 +258,31 @@ def new_ticket(request):
                             customer_name=customer_name, \
                             message_text=message)
             ticket.save()
+            data['success'] = True
+
+    return render(request, html, data)
+
+def new_customer(request):
+
+    data = {}
+    html = 'new_customer.html'
+    if request.method == 'POST':
+        machine_id = str(request.POST.get('machine-id'))
+        customer_firstname = str(request.POST.get('first-name'))
+        customer_lastname = str(request.POST.get('last-name'))
+        address = str(request.POST.get('address', ''))
+
+        if not machine_id or not customer_firstname:
+            data['errors'] = []
+            data['errors'].append('Please check that machine id or customer name is valid')
+            data['success'] = False
+            return render(request, html, data)
+        else:
+            customer = Customer(machine_id=machine_id, \
+                            first_name=customer_firstname, \
+                            last_name=customer_lastname, \
+                            address=address)
+            customer.save()
             data['success'] = True
 
     return render(request, html, data)

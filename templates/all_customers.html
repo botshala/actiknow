@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}New Ticket{% endblock %}
+
+{% block content %}
+<style type="text/css">
+    body {
+    background: #ddd;
+}
+.header {
+    color: #555;
+    margin: 25px 0;
+}
+.customer-title {
+    font-weight: bold;
+}
+</style>
+<h1 class="header text-center">All Customers</h1>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3" >
+        <ul class="list-group">
+            {% for customer in customers %}
+                <li class="list-group-item">
+                    <span class="customer-title">Customer Name: </span> {{ customer.first_name|add:" "|add:customer.first_name }} <br>
+                    <span class="customer-title">Machine Id:</span> {{ customer.machine_id }} <br>
+                    <span class="customer-title">Address:</span> {{ customer.address }} <br>
+                </li>
+            {% endfor %}
+        </ul>
+    </div><!-- /.row -->
+
+</div><!-- /.row -->
+{% endblock %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+    var $formContainer = $("#form-container");
+    var success = {{ success|yesno:"true,false" }};
+    console.log(success);
+
+    if (success === true) {
+        $formContainer.hide();
+    }
+</script>
+{% endblock %}
